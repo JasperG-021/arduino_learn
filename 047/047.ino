@@ -50,4 +50,6 @@ void start_analog(int direction, int ms) {
     analogWrite(pin_bi, 0);
     analogWrite(pin_fi, ms);
   }
+
+int status_button
 }

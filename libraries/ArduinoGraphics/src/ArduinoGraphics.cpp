@@ -1,6 +1,20 @@
 /*
   This file is part of the ArduinoGraphics library.
-  Copyright (c) 2025 Arduino SA. All rights reserved.
+  Copyright (c) 2019 Arduino SA. All rights reserved.
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 #include "ArduinoGraphics.h"
@@ -434,21 +448,17 @@ void ArduinoGraphics::endText(int scrollDirection)
   uint8_t strokeG = _strokeG;
   uint8_t strokeB = _strokeB;
 
+
+  stroke(_textR, _textG, _textB);
+
   if (scrollDirection == SCROLL_LEFT) {
-    int scrollLength = _textBuffer.length() * textFontWidth() + _textX + 1;
+    int scrollLength = _textBuffer.length() * textFontWidth() + _textX;
 
     for (int i = 0; i < scrollLength; i++) {
       beginDraw();
-
       int const text_x = _textX - i;
-      stroke(_textR, _textG, _textB);
       text(_textBuffer, text_x, _textY);
-
-      // clear previous position
-      const int clearX = text_x + _textBuffer.length() * _font->width;
-      stroke(_backgroundR, _backgroundG, _backgroundB);
-      line(clearX, _textY, clearX, _textY + _font->height - 1);
-
+      bitmap(_font->data[0x20], text_x - 1, _textY, 1, _font->height, _textSizeX, _textSizeY);
       endDraw();
 
       delay(_textScrollSpeed);
@@ -458,37 +468,21 @@ void ArduinoGraphics::endText(int scrollDirection)
 
     for (int i = 0; i < scrollLength; i++) {
       beginDraw();
-
       int const text_x = _textX - (scrollLength - i - 1);
-      stroke(_textR, _textG, _textB);
       text(_textBuffer, text_x, _textY);
-
-      // clear previous position
-      const int clearX = text_x - 1;
-      stroke(_backgroundR, _backgroundG, _backgroundB);
-      line(clearX, _textY, clearX, _textY + _font->height - 1);
-
       bitmap(_font->data[0x20], text_x - 1, _textY, 1, _font->height, _textSizeX, _textSizeY);
-
       endDraw();
 
       delay(_textScrollSpeed);
     }
   } else if (scrollDirection == SCROLL_UP) {
-    int scrollLength = textFontHeight() + _textY + 1;
+    int scrollLength = textFontHeight() + _textY;
 
     for (int i = 0; i < scrollLength; i++) {
       beginDraw();
-
       int const text_y = _textY - i;
-      stroke(_textR, _textG, _textB);
       text(_textBuffer, _textX, text_y);
-
-      // clear previous position
-      const int clearY = text_y + _font->height;
-      stroke(_backgroundR, _backgroundG, _backgroundB);
-      line(_textX, clearY, _textX + (_font->width * _textBuffer.length()) - 1, clearY);
-
+      bitmap(_font->data[0x20], _textX, text_y - 1, _font->width, 1, _textSizeX, _textSizeY);
       endDraw();
 
       delay(_textScrollSpeed);
@@ -498,16 +492,8 @@ void ArduinoGraphics::endText(int scrollDirection)
 
     for (int i = 0; i < scrollLength; i++) {
       beginDraw();
-
       int const text_y = _textY - (scrollLength - i - 1);
-      stroke(_textR, _textG, _textB);
       text(_textBuffer, _textX, text_y);
-
-      // clear previous position
-      const int clearY = text_y - 1;
-      stroke(_backgroundR, _backgroundG, _backgroundB);
-      line(_textX, clearY, _textX + (_font->width * _textBuffer.length()) - 1, clearY);
-
       bitmap(_font->data[0x20], _textX, text_y - 1, _font->width, 1, _textSizeX, _textSizeY);
       endDraw();
 
@@ -515,7 +501,6 @@ void ArduinoGraphics::endText(int scrollDirection)
     }
   } else {
     beginDraw();
-    stroke(_textR, _textG, _textB);
     text(_textBuffer, _textX, _textY);
     endDraw();
   }

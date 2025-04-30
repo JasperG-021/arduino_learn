@@ -1,2 +1,2 @@
 # ardunio_learn
-Stepper Motor
+HC-SR04 Ultrasonic Sensor for Echolocation

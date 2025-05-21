@@ -8,15 +8,45 @@
 #define SCREEN_HEIGHT 64
 #define SCREEN_RESET -1
 Adafruit_SSD1306 oled(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, SCREEN_RESET);
+
+
+#define PIN_BUTTON 2
+int val_button_old ;
 void setup() {
   Serial.begin(115200);
+  pinMode(PIN_BUTTON, INPUT_PULLUP);
   oled.begin(SSD1306_SWITCHCAPVCC, I2C_ADRESS);
   oled.clearDisplay();
   oled.display();
 }
 
 void loop() {
-  oled_ring();
+  int val_button = digitalRead(PIN_BUTTON);
+  if (val_button_old == 1 && val_button == 0) {
+    oled_text();
+    delay(1000);
+    oled_pixel();
+    delay(1000);
+    oled_line();
+    delay(1000);
+    oled_crosshair();
+    delay(1000);
+    oled_draw_rect();
+    delay(1000);
+    oled_fill_rect();
+    delay(1000);
+    oled_fill_rect_black();
+    delay(1000);
+    oled_draw_circle();
+    delay(1000);
+    oled_fill_circle();
+    delay(1000);
+    oled_ring();
+    oled.clearDisplay();
+    oled.display();
+  }
+  val_button_old = val_button;
+  delay(1000);
 }
 
 void oled_text() {
